@@ -1,6 +1,8 @@
 class RandomizedSet {
 public:
-    set<int>s;
+    map<int,int>mp;
+    vector<int>v;
+    int c=0;
     /** Initialize your data structure here. */
     RandomizedSet() {
        
@@ -8,27 +10,43 @@ public:
     
     /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
     bool insert(int val) {
-        if(s.find(val)==s.end()){ s.insert(val); return true;}
+        if(mp.find(val)==mp.end()){ 
+            
+            mp.insert({val,c});
+            
+            v.push_back(val);
+            
+            c++;
+            
+            return true;
+        }
         return false;
    }
     
     /** Removes a value from the set. Returns true if the set contained the specified element. */
     bool remove(int val) {
-        int count=0;
-        if(s.find(val)!=s.end()){
-            for (auto i = s.begin(); i != s.end();i++) { 
-                if (*i== val){ i=s.erase(i); return true;}
-            }
+        if(mp.find(val)!=mp.end()){
+            int temp=v[mp[val]];
+            v[mp[val]]=v[v.size()-1];
+            v[v.size()-1]=temp;
+            
+            v.pop_back();
+            
+            mp[v[mp[val]]]=mp[val];
+            mp.erase(val);
+            c--;
+            
+            return true;
         }
         return false;
     }
     
     /** Get a random element from the set. */
     int getRandom() {
-        int random=rand()%s.size(),count=0;
-        for(auto i:s){
-            if(count==random) return i;
-            count++;
+        if(v.size()!=0){
+            int random=rand()%(v.size());
+            
+            return v[random]; 
         }
         return 0;
     }
